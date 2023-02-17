@@ -1,5 +1,5 @@
 const express=require('express');
-const { addUser, getUser, editUser} = require('../controllers/userController');
+const { addUser, getUser, editUser, deleteUser} = require('../controllers/userController');
 
 const router=express.Router();
 
@@ -10,6 +10,9 @@ router.route('/')
 router.route('/:id')
     .get(getUser)
     .put(editUser)
+
+router.route('/:email')
+    .delete(deleteUser)
     
 
 
