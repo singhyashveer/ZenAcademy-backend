@@ -54,11 +54,34 @@ const editUser=async(req,res)=>{
     }
 }
 
+const deleteUser =  async(req,res)=>{
+    try{
+        User.findOneAndRemove(
+            { email: req.params.email },
+            function (err, result) {
+                if (result == null) {
+                    res.json({
+                        message: "No user found with this mail",
+                    });
+                }
+                else {
+                    res.json({
+                        message: "Successfully deleted the user",
+                        User: result,
+                    });
+                }
+            });
+    }catch (e) {
+        res.status(400).json({success:false,data:e.message});
+    }
+}
+
 
 
 
 module.exports = {
     addUser,
     getUser,
-    editUser
+    editUser,
+    deleteUser
 }
