@@ -32,6 +32,7 @@ const getAllCourses=async(req,res)=>{
 }
 
 const getCourseById=async(req,res)=>{
+    if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"){
     try{
         const course=await Course.findById(req.params.id);
         if(!course){
@@ -42,6 +43,9 @@ const getCourseById=async(req,res)=>{
     catch(e){
         res.status(400).json({success:false,data:e.message});
     }
+}
+else
+     return(res.status(401).json({success:false,data:"Unauthorized Access"}));
 }
 
 
@@ -85,8 +89,7 @@ const deleteCourse=async(req,res)=>{
 }
 
 const searchCourse=async(req,res)=>{
-    if(req.user.userRoll!=="admin")
-        return(res.status(401).json({success:false,data:"Unauthorized Access"}));
+    if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"||req.user.userRoll==="employee")
     try{
         const {courseName}=req.query;
         const queryObj={};
@@ -102,6 +105,8 @@ const searchCourse=async(req,res)=>{
     catch(err){
         res.status(400).json({success:false,data:err.message})
     }
+    else
+    return(res.status(401).json({success:false,data:"Unauthorized Access"}));
 }
 
 
