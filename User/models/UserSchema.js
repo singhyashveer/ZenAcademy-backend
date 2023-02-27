@@ -23,6 +23,10 @@ const UserSchema=new mongoose.Schema({
         type:String,
         enum: ["admin","employee","sgo","l&d"],
         required:[true,'userRoll is required']
+    },
+    sgo:{
+        type:String,
+        required:[true,'sgo is required']
     }
 })
 

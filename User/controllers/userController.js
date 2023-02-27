@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt')
 
 const addUser=async(req,res)=>{
     try {
-        console.log(req.user.userRoll)
         if(req?.user?.userRoll!=='admin')
             return res.status(401).json({success:false,data:"unathorised access"})
         const user = await User.findOne({userName:req?.body?.userName})
@@ -23,29 +22,67 @@ const addUser=async(req,res)=>{
 }
 
 const listAllUser=async(req,res)=>{
-    if(req.user.userRoll!=="admin"||req.user.userRoll!=="sgo"||req.user.userRoll!=="l&d")
+    if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"){
+        
+        try{
+            const panelMembers=await User.find({userRoll:{$ne:'admin'}});
+            res.status(200).json({success:true,data:panelMembers});
+        }
+        catch(err){
+            res.status(400).json({success:false,data:err.message});
+        }
+    }
+    else
         return(res.status(401).json({success:false,data:"Unauthorize Access"}));
-    try{
-       const panelMembers=await User.find({userRoll:{$ne:'admin'}});
-       res.status(200).json({success:true,data:panelMembers});
+    
+}
+const getUserById=async(req,res)=>{
+    if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"){
+
+        try{
+            const user=await User.findById(req.params.id);
+            if(!user){
+                return(res.status(404).json({success:false,data:"User Not Found"}));
+            }
+            res.status(200).json({success:true,data:user});
+        }
+        catch(e){
+            res.status(400).json({success:false,data:e.message});
+        }
     }
-    catch(err){
-        res.status(400).json({success:false,data:err.message});
-    }
+    else
+        return(res.status(401).json({success:false,data:"Unauthorized Access"}));
 }
 
 const searchUser=async(req,res)=>{
-    if(req.user.userRoll!=="admin"||req.user.userRoll!=="sgo"||req.user.userRoll!=="l&d")
+    if(req.user.userRoll!=="admin")
         return(res.status(401).json({success:false,data:"Unauthorized Access"}));
     try{
-        const user=await User.findById(req.params.id);
-        if(!user){
-            return(res.status(404).json({success:false,data:"User Not Found"}));
+        const {userName,name}=req.query;
+        const queryObj={};
+        if(name){
+            queryObj.name=name;
         }
-        res.status(200).json({success:true,data:user});
+        if(userName){
+            queryObj.userName=userName;
+        }
+        const employees=await User.find(queryObj);
+        if(!employees){
+            res.status(404).json({success:false,data:"No employee present with given details"});
+        }
+        res.status(200).json({success:true,data:employees});
     }
-    catch(e){
-        res.status(400).json({success:false,data:e.message});
+    catch(err){
+        res.status(400).json({success:false,data:err.message})
+    }
+}
+
+const getUser = async(req,res)=>{
+    try{
+        const user = await User.findOne({userName:req.user.userName})
+        res.status(200).json({success:true,data:user})
+    }catch(err){
+        res.status(400).json({success:false,data:err.message})
     }
 }
 
@@ -147,7 +184,9 @@ const logOut=async(req,res)=>{
 module.exports = {
     addUser,
     listAllUser,
+    getUserById,
     searchUser,
+    getUser,
     editUser,
     deleteUser,
     login,
