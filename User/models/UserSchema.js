@@ -27,7 +27,16 @@ const UserSchema=new mongoose.Schema({
     sgo:{
         type:String,
         required:[true,'sgo is required']
+    },
+    bookmarkedCourses:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Course'
+    }],
+    assinedCourses:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Course'
     }
+
 })
 
 const User=mongoose.model('user',UserSchema);

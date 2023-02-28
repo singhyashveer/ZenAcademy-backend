@@ -178,6 +178,38 @@ const logOut=async(req,res)=>{
     res.json({ success:true,message: 'Cookie cleared' })
 }
 
+const bookmark=async(req,res)=>{
+    try{
+        if(req.user.userRoll==='employee'){
+
+            const {bookmarkedCourses}=req.body;
+            const user=await User.findOne({userName : req.user.userName})
+            if(user.bookmarkedCourses.includes(bookmarkedCourses))
+            {
+                const bookmark= await User.findOneAndUpdate({userName:req.user.userName},{$pull: { bookmarkedCourses: bookmarkedCourses } }, {new: true, runValidators: true})
+                if (!bookmark)
+                return res.status(404).json({success:false ,data: `User not found` })
+                res.status(200).json({success:true,data:bookmark});
+            }
+            else
+            {
+                const bookmark= await User.findOneAndUpdate({userName:req.user.userName},{$push: { bookmarkedCourses: bookmarkedCourses } }, {new: true, runValidators: true})
+                if (!bookmark)
+                return res.status(404).json({success:false ,data: `User not found` })
+                res.status(200).json({success:true,data:bookmark});
+            }
+            
+        }
+        else{
+            return(res.status(401).json({success:false,data:"Unauthorized Access!! You can not bookmark Course"}));
+        }
+    }
+    catch(e){
+        res.status(400).json({success:false,data:e.message})
+    }
+}
+
+
 
 
 
@@ -189,6 +221,7 @@ module.exports = {
     getUser,
     editUser,
     deleteUser,
+    bookmark,
     login,
     logOut
 }

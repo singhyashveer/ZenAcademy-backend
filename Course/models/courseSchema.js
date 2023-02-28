@@ -26,9 +26,6 @@ const CourseSchema=new mongoose.Schema({
     repoLink:{
         type:String
     },
-    bookmark:{
-        type:Boolean
-    },
     enrolled:{
         type:Boolean
     },
