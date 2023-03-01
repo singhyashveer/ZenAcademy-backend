@@ -20,12 +20,12 @@ const CourseSchema=new mongoose.Schema({
     description:{
         type:String
     },
-    recordingLink:{
+    recordingLink:[{
         type:String
-    },
-    repoLink:{
+    }],
+    repoLink:[{
         type:String
-    },
+    }],
     enrolled:{
         type:Boolean
     },

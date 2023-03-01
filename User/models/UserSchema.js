@@ -32,10 +32,10 @@ const UserSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Course'
     }],
-    assinedCourses:{
+    assignedCourses:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Course'
-    }
+    }]
 
 })
 

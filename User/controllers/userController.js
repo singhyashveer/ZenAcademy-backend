@@ -1,6 +1,8 @@
 const User=require('../models/userSchema')
 const jwt=require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const axios=require('axios')
+const { response } = require('express')
 
 const addUser=async(req,res)=>{
     try {
@@ -88,7 +90,7 @@ const getUser = async(req,res)=>{
 
 
 const editUser=async(req,res)=>{
-    if(req.user.useruserRoll!=="admin")
+    if(req.user.userRoll!=="admin")
         return(res.status(401).json({success:false,data:"Unauthorize Access"}));
     const updates = Object.keys(req.body);
     try {
@@ -172,7 +174,6 @@ const login=async(req,res)=>{
 
 const logOut=async(req,res)=>{
     const cookies = req.cookies
-    console.log(req.cookies);
     if (!cookies?.jwt) return res.sendStatus(204) //No content
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
     res.json({ success:true,message: 'Cookie cleared' })
@@ -209,6 +210,94 @@ const bookmark=async(req,res)=>{
     }
 }
 
+const viewBookmark=async(req,res)=>{
+    try{
+        // console.log(req.user.userRoll)
+        if(req.user.userRoll==='employee'){
+            const user=await User.findOne({userName : req.user.userName})
+            axios.defaults.headers.common = {'Authorization': `Bearer ${req.user.token}`}
+            let bookmarked=[];
+
+            // const promise=new Promise((resolve,reject)=>{
+
+                
+            // })
+            const promises=[];
+            if(user.bookmarkedCourses){
+                user.bookmarkedCourses.forEach((bookmarkID)=>{
+                    const pr=axios.get(`http://localhost:5002/course/${bookmarkID}`);
+                    promises.push(pr);
+                })
+                const response=await Promise.all(promises);
+                bookmarked=response.map(resp=>resp.data.data);
+                return res.status(200).json({success:true,data:bookmarked});
+            }
+
+            // user.bookmarkedCourses.forEach(async(bookmarkID)=>{
+            //     const response=await axios.get(`http://localhost:5002/course/${bookmarkID}`);
+            //     bookmarked.push(response.data.data)
+            //     console.log("insider ", bookmarked);
+            // })
+            // return(res.status(200).json({success:true,data:bookmarked}));
+        }
+        else
+        return res.status(401).json({success:false,data:"unauthorised access"})
+    }
+    catch(e){
+        res.status(400).json({success:false,data:e.message})
+    }
+}
+
+const assignCourse=async(req,res)=>{
+    try{
+        if(req.user.userRoll==='sgo'||req.user.userRoll==='admin'){
+            const{userID,assignedCourses}=req.body
+            const user=await User.findOne({_id : userID})
+            if(user.assignedCourses.includes(assignedCourses))
+            return res.status(209).json({success:false,data:"Already assigned"})
+            const assigned=await User.findOneAndUpdate({_id:userID},{$push: { assignedCourses: assignedCourses } }, {new: true, runValidators: true,})
+            if(!assigned)
+                return res.status(404).json({success:false ,data: `No User with id :${userID}` })
+            res.status(200).json({success:true,data:assigned});
+        }
+        else
+        return res.status(401).json({success:false,data:"unauthorised access"})
+    }
+    catch(e){
+        res.status(400).json({success:false,data:e.message})
+    }
+}
+
+const viewAssignedCourses=async(req,res)=>{
+    try{
+
+        if(req.user.userRoll==='employee')
+        {
+                const user=await User.findOne({userName : req.user.userName})
+                axios.defaults.headers.common = {'Authorization': `Bearer ${req.user.token}`}
+                let assigned=[];
+
+                const promises=[];
+            if(user.assignedCourses){
+                user.assignedCourses.forEach((assignID)=>{
+                    const pr=axios.get(`http://localhost:5002/course/${assignID}`);
+                    promises.push(pr);
+                })
+                const response=await Promise.all(promises);
+                assigned=response.map(resp=>resp.data.data);
+                return res.status(200).json({success:true,data:assigned});
+            }
+        }
+        else
+        return res.status(401).json({success:false,data:"unauthorised access"})
+    }
+    catch(e){
+        res.status(400).json({success:false,data:e.message})
+    }
+}
+
+
+
 
 
 
@@ -222,6 +311,9 @@ module.exports = {
     editUser,
     deleteUser,
     bookmark,
+    viewBookmark,
+    assignCourse,
+    viewAssignedCourses,
     login,
     logOut
 }
