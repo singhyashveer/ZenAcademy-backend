@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const {isEmail}=require('validator');
 
 const UserSchema=new mongoose.Schema({
     name:{
@@ -11,7 +12,8 @@ const UserSchema=new mongoose.Schema({
     },
     email:{
         type:String,
-        required:[true,'eMail is required']
+        required:[true,'eMail is required'],
+        validate: [ isEmail, 'invalid email' ]
     },
     password:{
         type:String,
@@ -19,8 +21,22 @@ const UserSchema=new mongoose.Schema({
     },
     userRoll:{
         type:String,
+        enum: ["admin","employee","sgo","l&d"],
         required:[true,'userRoll is required']
-    }
+    },
+    sgo:{
+        type:String,
+        required:[true,'sgo is required']
+    },
+    bookmarkedCourses:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Course'
+    }],
+    assignedCourses:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Course'
+    }]
+
 })
 
 const User=mongoose.model('user',UserSchema);

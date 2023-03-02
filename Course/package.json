@@ -1,27 +1,22 @@
 {
-  "name": "user",
+  "name": "course",
   "version": "1.0.0",
   "description": "",
-  "main": "UserServer.js",
+  "main": "CourseServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node UserServer.js",
-    "dev": "nodemon UserServer.js"
+    "start": "node CourseServer.js",
+    "dev": "nodemon CourseServer.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "axios": "^1.3.4",
-    "nodemon": "^2.0.20",
-    "validator": "^13.9.0"
-  },
-  "dependencies": {
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.9.1"
+    "mongoose": "^6.10.0"
   }
 }

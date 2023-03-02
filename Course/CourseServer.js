@@ -13,7 +13,7 @@ app.use(cors({origin:'http://localhost:3000',credentials:true}));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/user',require('./routes/userRoutes'));
+app.use('/course',require('./routes/courseRoutes'));
 
 mongoose.connection.once('open',()=>{
     app.listen(process.env.PORT,console.log("Listening..."));

@@ -1,3 +1,7 @@
 /User/node_modules
 /User/.env
 /User/package-lock.json
+/User/adminCreation.js
+/Course/node_modules
+/Course/.env
+/Course/package-lock.json
