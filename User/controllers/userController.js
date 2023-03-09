@@ -297,6 +297,30 @@ const viewAssignedCourses=async(req,res)=>{
 }
 
 
+const dashboard=async(req,res)=>{
+    try{
+        if(req.user.userRoll==="employee"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d")
+        {
+            const user=await User.findOne({userName : req.user.userName})
+            const sgo=user.sgo;
+            axios.defaults.headers.common = {'Authorization': `Bearer ${req.user.token}`}
+            const result=await axios.get(`http://localhost:5002/course/`)
+            const responses=result.data.data;
+            const response1=responses.filter((response)=>{
+                return response.sgo===sgo
+            })
+            console.log(response1)
+            return res.status(200).json({success:true,data:response1});
+        }
+        else
+        return res.status(401).json({success:false,data:"unauthorised access"})
+    }
+    catch(e){
+        res.status(400).json({success:false,data:e.message})
+    }
+}
+
+
 
 
 
@@ -314,6 +338,7 @@ module.exports = {
     viewBookmark,
     assignCourse,
     viewAssignedCourses,
+    dashboard,
     login,
     logOut
 }

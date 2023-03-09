@@ -17,7 +17,7 @@ const addCourse=async(req,res)=>{
 }
 
 const getAllCourses=async(req,res)=>{
-    if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"){
+    if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"||req.user.userRoll==="employee"){
         try {
             const courses = await Course.find({})
             res.status(200).json({ success: true, data: courses })
@@ -62,7 +62,7 @@ const editCourse=async(req,res)=>{
         }
         updates.forEach((update) => course[update] = req.body[update]);
         const updatedCourse=await course.save();
-        res.status(200).json({success:true,candidate:updatedCourse});
+        res.status(200).json({success:true,course:updatedCourse});
     } catch (e) {
         res.status(400).json({success:false,data:e.message});
     }

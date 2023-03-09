@@ -31,6 +31,10 @@ const CourseSchema=new mongoose.Schema({
     },
     progressBar:{
         type:Number
+    },
+    sgo:{
+        type:String,
+        required:[true,'sgo is required']
     }
 
 })
