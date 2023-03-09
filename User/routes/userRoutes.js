@@ -1,5 +1,5 @@
 const express=require('express');
-const { addUser, listAllUser ,getUserById , searchUser, getUser, editUser, deleteUser ,bookmark, viewBookmark, login, logOut, assignCourse, viewAssignedCourses} = require('../controllers/userController');
+const { addUser, listAllUser ,getUserById , searchUser, getUser, editUser, deleteUser ,bookmark, viewBookmark, login, logOut, assignCourse, viewAssignedCourses, dashboard} = require('../controllers/userController');
 const refresh=require('../controllers/generateAccessToken')
 const verifyJWT=require('../middleware/verifyJWT')
 
@@ -13,6 +13,8 @@ router.route('/')
 
 router.route('/login').post(login);
 router.route('/logout').get(verifyJWT,logOut);
+
+router.route('/dashboard').get(verifyJWT,dashboard)
 
 router.route('/token').get(refresh);
 
