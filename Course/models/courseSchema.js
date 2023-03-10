@@ -5,17 +5,11 @@ const CourseSchema=new mongoose.Schema({
         type:String,
         required:[true,'Course-Name is required']
     },
-    courseId:{
-        type:Number,
-        required:[true,'CourseID is required']
-    },
     startDate:{
-        type:String,
-        required:[true,'Start Date is required']
+        type:String
     },
     endDate:{
-        type:String,
-        required:[true,'End Date is required']
+        type:String
     },
     description:{
         type:String
