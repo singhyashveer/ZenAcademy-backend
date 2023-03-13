@@ -27,8 +27,8 @@ const listAllUser=async(req,res)=>{
     if(req.user.userRoll==="admin"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d"){
         
         try{
-            const panelMembers=await User.find({userRoll:{$ne:'admin'}});
-            res.status(200).json({success:true,data:panelMembers});
+            const users=await User.find({userRoll:{$ne:'admin'}});
+            res.status(200).json({success:true,data:users});
         }
         catch(err){
             res.status(400).json({success:false,data:err.message});
@@ -100,7 +100,7 @@ const editUser=async(req,res)=>{
         if(!user) {
             return res.status(404).json({
                 success:false,
-                data:"No panel With given id"
+                data:"No user With given id"
             });
         }
         updates.forEach((update) => user[update] = req.body[update]);
@@ -268,6 +268,7 @@ const assignCourse=async(req,res)=>{
     }
 }
 
+
 const viewAssignedCourses=async(req,res)=>{
     try{
 
@@ -297,7 +298,7 @@ const viewAssignedCourses=async(req,res)=>{
 }
 
 
-const dashboard=async(req,res)=>{
+const sgoCourse=async(req,res)=>{
     try{
         if(req.user.userRoll==="employee"||req.user.userRoll==="sgo"||req.user.userRoll==="l&d")
         {
@@ -309,7 +310,7 @@ const dashboard=async(req,res)=>{
             const response1=responses.filter((response)=>{
                 return response.sgo===sgo
             })
-            console.log(response1)
+            // console.log(response1)
             return res.status(200).json({success:true,data:response1});
         }
         else
@@ -318,6 +319,23 @@ const dashboard=async(req,res)=>{
     catch(e){
         res.status(400).json({success:false,data:e.message})
     }
+}
+
+const sgoUser=async(req,res)=>{
+    try{
+        if(req.user.userRoll==='sgo')
+        {
+            const user=await User.findOne({userName : req.user.userName})
+            const sgo=user.sgo;
+            const users=await User.find({userRoll:'employee'||'Employee'||'EMPLOYEE', sgo:sgo,});
+            res.status(200).json({success:true,data:users});
+        }
+    }
+
+    catch(e){
+        res.status(400).json({success:false,data:e.message})
+    }
+
 }
 
 
@@ -338,7 +356,8 @@ module.exports = {
     viewBookmark,
     assignCourse,
     viewAssignedCourses,
-    dashboard,
+    sgoCourse,
+    sgoUser,
     login,
     logOut
 }

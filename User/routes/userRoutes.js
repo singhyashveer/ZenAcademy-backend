@@ -1,5 +1,5 @@
 const express=require('express');
-const { addUser, listAllUser ,getUserById , searchUser, getUser, editUser, deleteUser ,bookmark, viewBookmark, login, logOut, assignCourse, viewAssignedCourses, dashboard} = require('../controllers/userController');
+const { addUser, listAllUser ,getUserById , searchUser, getUser, editUser, deleteUser ,bookmark, viewBookmark, login, logOut, assignCourse, viewAssignedCourses, sgoCourse, sgoUser} = require('../controllers/userController');
 const refresh=require('../controllers/generateAccessToken')
 const verifyJWT=require('../middleware/verifyJWT')
 
@@ -14,7 +14,7 @@ router.route('/')
 router.route('/login').post(login);
 router.route('/logout').get(verifyJWT,logOut);
 
-router.route('/dashboard').get(verifyJWT,dashboard)
+router.route('/sgoCourse').get(verifyJWT,sgoCourse)
 
 router.route('/token').get(refresh);
 
@@ -24,6 +24,7 @@ router.route('/bookmark').put(verifyJWT,bookmark)
 router.route('/bookmark/view').get(verifyJWT,viewBookmark)
 router.route('/assignCourse').put(verifyJWT,assignCourse)
 router.route('/assignCourse/view').get(verifyJWT,viewAssignedCourses)
+router.route('/sgoUsers').get(verifyJWT,sgoUser)
     
 router.route('/:id')
     .get(verifyJWT,getUserById)
