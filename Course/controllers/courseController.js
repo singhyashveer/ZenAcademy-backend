@@ -49,22 +49,26 @@ else
 
 
 const editCourse=async(req,res)=>{
-    if(req.user.userRoll!=="admin"){
-        return(res.status(401).json({success:false,data:"Unauthorize Access"}));}
-    const updates = Object.keys(req.body);
-    try {
-        const course = await Course.findOne({_id: req.params.id});
-        if(!course) {
-            return res.status(404).json({
-                success:false,
-                data:"No panel With given id"
-            });
+    if(req.user.userRoll==="admin"||req.user.userRoll==="l&d"){
+        
+        const updates = Object.keys(req.body);
+        try {
+            const course = await Course.findOne({_id: req.params.id});
+            if(!course) {
+                return res.status(404).json({
+                    success:false,
+                    data:"No panel With given id"
+                });
+            }
+            updates.forEach((update) => course[update] = req.body[update]);
+            const updatedCourse=await course.save();
+            res.status(200).json({success:true,course:updatedCourse});
+        } catch (e) {
+            res.status(400).json({success:false,data:e.message});
         }
-        updates.forEach((update) => course[update] = req.body[update]);
-        const updatedCourse=await course.save();
-        res.status(200).json({success:true,course:updatedCourse});
-    } catch (e) {
-        res.status(400).json({success:false,data:e.message});
+    }
+    else{
+        return(res.status(401).json({success:false,data:"Unauthorize Access"}));
     }
 }
 

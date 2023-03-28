@@ -21,9 +21,9 @@ router.route('/token').get(refresh);
 router.route('/users').get(verifyJWT,listAllUser)
 router.route('/search').get(verifyJWT,searchUser)
 router.route('/bookmark').put(verifyJWT,bookmark)
-router.route('/bookmark/view').get(verifyJWT,viewBookmark)
+router.route('/bookmarked').get(verifyJWT,viewBookmark)
 router.route('/assignCourse').put(verifyJWT,assignCourse)
-router.route('/assignCourse/view').get(verifyJWT,viewAssignedCourses)
+router.route('/assignedCourses').get(verifyJWT,viewAssignedCourses)
 router.route('/sgoUsers').get(verifyJWT,sgoUser)
     
 router.route('/:id')
