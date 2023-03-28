@@ -190,14 +190,14 @@ const bookmark=async(req,res)=>{
                 const bookmark= await User.findOneAndUpdate({userName:req.user.userName},{$pull: { bookmarkedCourses: bookmarkedCourses } }, {new: true, runValidators: true})
                 if (!bookmark)
                 return res.status(404).json({success:false ,data: `User not found` })
-                res.status(200).json({success:true,data:bookmark});
+                res.status(200).json({success:true,data:bookmark,xyz:0});
             }
             else
             {
                 const bookmark= await User.findOneAndUpdate({userName:req.user.userName},{$push: { bookmarkedCourses: bookmarkedCourses } }, {new: true, runValidators: true})
                 if (!bookmark)
                 return res.status(404).json({success:false ,data: `User not found` })
-                res.status(200).json({success:true,data:bookmark});
+                res.status(200).json({success:true,data:bookmark,xyz:1});
             }
             
         }
@@ -274,11 +274,11 @@ const viewAssignedCourses=async(req,res)=>{
 
         if(req.user.userRoll==='employee')
         {
-                const user=await User.findOne({userName : req.user.userName})
-                axios.defaults.headers.common = {'Authorization': `Bearer ${req.user.token}`}
-                let assigned=[];
-
-                const promises=[];
+            const user=await User.findOne({userName : req.user.userName})
+            axios.defaults.headers.common = {'Authorization': `Bearer ${req.user.token}`}
+            let assigned=[];
+            
+            const promises=[];
             if(user.assignedCourses){
                 user.assignedCourses.forEach((assignID)=>{
                     const pr=axios.get(`http://localhost:5002/course/${assignID}`);
